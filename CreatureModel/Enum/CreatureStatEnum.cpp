@@ -1,0 +1,9 @@
+#ifndef CREATURE_STAT_ENUM
+#define CREATURE_STAT_ENUM
+
+enum CreatureStatEnum {
+	ATTACK,
+	DEFENCE,
+	SPEED
+};
+#endif //CREATURE_STAT_ENUM

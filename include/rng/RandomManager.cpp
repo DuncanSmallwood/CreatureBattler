@@ -4,6 +4,8 @@
 #include <random>
 #include "RandomManager.h"
 
+std::minstd_rand* RandomManager::engine = NULL;
+
 std::minstd_rand* RandomManager::getEngine() {
 	if (engine == NULL) {
 		std::random_device rd;

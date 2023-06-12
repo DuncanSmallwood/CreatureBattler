@@ -5,7 +5,8 @@
 
 Move::Move() {
 	power = -1;
-	accuracy = -1;;
+	accuracy = -1;
+	type = MoveTypeEnum::AIR;
 }
 
 Move::Move(double power, double accuracy, MoveTypeEnum::MoveTypeEnum type) {

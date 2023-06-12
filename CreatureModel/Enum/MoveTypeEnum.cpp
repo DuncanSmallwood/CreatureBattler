@@ -2,7 +2,7 @@
 #define MOVE_TYPE_ENUM_H
 namespace MoveTypeEnum {
 
-	enum class MoveTypeEnum {
+	enum MoveTypeEnum {
 		EARTH,
 		FIRE,
 		WATER,

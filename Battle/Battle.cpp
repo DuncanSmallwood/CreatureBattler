@@ -3,29 +3,29 @@
 
 #include "Battle.h"
 
-Battle::Battle(Creature* creature1, Creature* creature2) {
+Battle::Battle(std::shared_ptr<Creature> creature1, std::shared_ptr<Creature> creature2) {
 	this->creature1 = creature1;
 	this->creature2 = creature2;
 }
 
-void Battle::doTurn(Move* creature1Move, Move* creature2Move) {
-	Turn* turn = new Turn(creature1, creature2, creature1Move, creature2Move);
+void Battle::doTurn(std::shared_ptr<Move> creature1Move, std::shared_ptr<Move> creature2Move) {
+	std::unique_ptr<Turn> turn = std::make_unique<Turn>(creature1, creature2, creature1Move, creature2Move);
 	while (turn->moreMoments())
 	{
-		CombatMoment cm = turn->nextMoment();
-		Creature* target = cm.getTargetCreature();
-		Creature* source = cm.getSourceCreature();
-		Move* move = cm.getMove();
+		std::shared_ptr<CombatMoment> cm = turn->nextMoment();
+		std::shared_ptr<Creature> target = cm->getTargetCreature();
+		double targetDef = target->getDefence();
+		std::shared_ptr<Creature> source = cm->getSourceCreature();
+		double sourceAtk = source->getAttack();
+		std::shared_ptr<Move> move = cm->getMove();
+		double movePower = move->getPower();
 		unsigned int damage = calculateDamage(source->getAttack(), move->getPower(), target->getDefence());
 		target->takeDamage(damage);
 		double health = target->getCurrentHealth();
 		if (health <= 0) {
-			turn->clearMoments(target);
+			turn->clearMoments(*target);
 		}
-		delete move;
 	}
-	delete turn;
-	turn = NULL;
 }
 
 unsigned int Battle::calculateDamage(double attack, double power, double defence) const {

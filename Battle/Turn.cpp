@@ -6,7 +6,7 @@
 #include "Turn.h"
 #include "..\include\rng\RandomManager.h"
 // TODO: make it so the moment order is dynamic with speed boosts ect.
-Turn::Turn(Creature* creature1, Creature* creature2, Move* creature1Move, Move* creaure2Move) {
+Turn::Turn(std::shared_ptr<Creature> creature1, std::shared_ptr<Creature> creature2, std::shared_ptr<Move> creature1Move, std::shared_ptr<Move> creature2Move) {
 	this->creature1 = creature1;
 	this->creature2 = creature2;
 	this->creature1Move = creature1Move;
@@ -21,70 +21,52 @@ Turn::Turn(Creature* creature1, Creature* creature2, Move* creature1Move, Move* 
 	else
 		creature1First = c1Speed > c2Speed;
 
-	CombatMoment* moment1;
-	CombatMoment* moment2;
+	std::shared_ptr<CombatMoment> moment1 = std::make_shared<CombatMoment>(creature1Move, creature1, creature2);
+	std::shared_ptr<CombatMoment> moment2 = std::make_shared<CombatMoment>(creature2Move, creature2, creature1);
 	if (creature1First) {
-		moment1 = new CombatMoment(creature1Move, creature1, creature2);
-		moment2 = new CombatMoment(creature2Move, creature2, creature1);
+		momentQueue.push_back(moment1);
+		momentQueue.push_back(moment2);
 	}
 	else{
-		moment1 = new CombatMoment(creature2Move, creature2, creature1);
-		moment2 = new CombatMoment(creature1Move, creature1, creature2);
+		momentQueue.push_back(moment2);
+		momentQueue.push_back(moment1);
 	}
-	momentQueue.push_back(*moment1);
-	momentQueue.push_back(*moment2);
-}
-
-Turn::~Turn() {
-	if (creature1Move) {
-		delete creature1Move;
-		creature1Move = NULL;
-	}
-	if (creature2Move) {
-		delete creature2Move;
-		creature2Move = NULL;
-	}
+	
 }
 
 
-Turn& Turn::setCreature1(Creature* creature) {
-	if (creature1) {
-		delete creature1;
-	}
+Turn& Turn::setCreature1(std::shared_ptr<Creature> creature) {
 	creature1 = creature;
 	return *this;
 }
 
-Turn& Turn::setCreature2(Creature* creature) {
-	if (creature2) {
-		delete creature2;
-	}
+Turn& Turn::setCreature2(std::shared_ptr<Creature> creature) {
 	creature2 = creature;
 	return *this;
 }
 
-Creature* Turn::getCreature1() {
-	return this->creature1;
+std::shared_ptr<Creature> Turn::getCreature1() const{
+	return creature1;
 }
 
-Creature* Turn::getCreature2() {
-	return this->creature2;
+std::shared_ptr<Creature> Turn::getCreature2() const {
+	return creature2;
 }
 
 
-CombatMoment& Turn::nextMoment() {
-	CombatMoment* nextMoment = &momentQueue.front();
+std::shared_ptr<CombatMoment> Turn::nextMoment() {
+	std::shared_ptr<CombatMoment> nextMoment = momentQueue.front();
 	momentQueue.erase(momentQueue.begin());
-	return *nextMoment;
+	return nextMoment;
 }
 
 bool Turn::moreMoments() {
-	return momentQueue.empty();
+	return !momentQueue.empty();
 }
 
-void Turn::clearMoments(Creature* source) {
-	for (std::list<CombatMoment>::iterator it = momentQueue.begin(); it != momentQueue.end();) {
-		if (*it->getSourceCreature() == *source) {
+void Turn::clearMoments(const Creature& source) {
+	for (std::list<std::shared_ptr<CombatMoment>>::iterator it = momentQueue.begin(); it != momentQueue.end();) {
+		if (*it->get()->getSourceCreature() == source) {
 			it = momentQueue.erase(it);
 		}
 		else {

@@ -56,6 +56,11 @@ Creature& Creature::setSpeed(double speed) {
 	return *this;
 }
 
+Creature& Creature::setName(std::string name) {
+	this->name = name;
+	return *this;
+}
+
 
 Creature& Creature::setType(std::set<CreatureTypeEnum::CreatureTypeEnum>* type) {
 	if (this->type != NULL) {

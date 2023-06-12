@@ -9,24 +9,23 @@
 
 class Turn {
 private:
-	Creature* creature1;
-	Creature* creature2;
-	Move* creature1Move;
-	Move* creature2Move;
+	std::shared_ptr<Creature> creature1;
+	std::shared_ptr<Creature> creature2;
+	std::shared_ptr<Move> creature1Move;
+	std::shared_ptr<Move> creature2Move;
 
-	std::list<CombatMoment> momentQueue;
+	std::list<std::shared_ptr<CombatMoment>> momentQueue;
 
 public:
-	Turn(Creature* creature1, Creature* creature2, Move* creature1Move, Move* creature2Move);
-	~Turn();
+	Turn(std::shared_ptr<Creature> creature1, std::shared_ptr<Creature> creature2, std::shared_ptr<Move> creature1Move, std::shared_ptr<Move> creature2Move);
 
-	Turn& setCreature1(Creature* creature1);
-	Turn& setCreature2(Creature* creature2);
-	Creature* getCreature1();
-	Creature* getCreature2();
+	Turn& setCreature1(std::shared_ptr<Creature> creature1);
+	Turn& setCreature2(std::shared_ptr<Creature> creature2);
+	std::shared_ptr<Creature> getCreature1() const;
+	std::shared_ptr<Creature> getCreature2() const;
 
-	CombatMoment& nextMoment();
+	std::shared_ptr<CombatMoment> nextMoment();
 	bool moreMoments();
-	void clearMoments(Creature* source);
+	void clearMoments(const Creature& source);
 };
 #endif // TURN_H

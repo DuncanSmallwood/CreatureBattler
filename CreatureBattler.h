@@ -5,5 +5,6 @@
 
 #include <iostream>
 #include "CreatureModel/Creature.h"
+#include "Battle/Battle.h"
 
 // TODO: Reference additional headers your program requires here.

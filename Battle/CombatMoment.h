@@ -6,15 +6,15 @@
 
 class CombatMoment {
 private:
-	Move* move;
-	Creature* sourceCreature;
-	Creature* targetCreature;
+	std::shared_ptr<Move> move;
+	std::shared_ptr<Creature> sourceCreature;
+	std::shared_ptr<Creature> targetCreature;
 
 public:
-	CombatMoment(Move* move, Creature* sourceCreature, Creature* targetCreature);
+	CombatMoment(std::shared_ptr<Move> move, std::shared_ptr<Creature> sourceCreature, std::shared_ptr<Creature> targetCreature);
 
-	Move* getMove() const;
-	Creature* getSourceCreature() const;
-	Creature* getTargetCreature() const;
+	std::shared_ptr<Move> getMove() const;
+	std::shared_ptr<Creature> getSourceCreature() const;
+	std::shared_ptr<Creature> getTargetCreature() const;
 };
 #endif // COMBAT_MOMENT_H

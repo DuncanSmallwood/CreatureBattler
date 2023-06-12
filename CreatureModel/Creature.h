@@ -31,6 +31,7 @@ public:
 	Creature& setDefence(double defence);
 	Creature& setHealth(double health);
 	Creature& setSpeed(double speed);
+	Creature& setName(std::string name);
 
 	Creature& setType(std::set<CreatureTypeEnum::CreatureTypeEnum>* type);
 	Creature& ensureType(CreatureTypeEnum::CreatureTypeEnum type);

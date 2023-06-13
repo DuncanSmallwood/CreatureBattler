@@ -20,9 +20,9 @@ bool RandomManager::d2() {
 	return dist(*rng) == 0;
 }
 
-int RandomManager::d16() {
+int RandomManager::rollDice(int diceSides) {
 	std::minstd_rand* rng = getEngine();
-	std::uniform_int_distribution<int> dist(0, 15);
+	std::uniform_int_distribution<int> dist(0, diceSides - 1);
 	return dist(*rng);
 }
 #endif // RANDOM_MANAGER_CPP

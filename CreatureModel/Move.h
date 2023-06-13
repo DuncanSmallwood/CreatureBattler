@@ -12,9 +12,10 @@ private:
 public:
 	Move();
 	Move(double power, double accuracy, MoveTypeEnum::MoveTypeEnum type);
+	Move(const Move& other);
 
 	Move& setPower(double power);
-	Move& setAccuracy(double power);
+	Move& setAccuracy(double accuracy);
 	Move& setType(MoveTypeEnum::MoveTypeEnum type);
 
 	double getPower();

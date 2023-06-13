@@ -17,7 +17,7 @@ Creature::Creature() {
 	type = NULL;
 }
 
-Creature::Creature(double health, double attack, double defence, double speed, std::set<CreatureTypeEnum::CreatureTypeEnum>* type) {
+Creature::Creature(double health, double attack, double defence, double speed, std::set<CreatureTypeEnum::CreatureTypeEnum>* type, std::vector<Move> moves) {
 	this->health = health;
 	this->currentHealth = health;
 	this->attack = attack;
@@ -27,6 +27,7 @@ Creature::Creature(double health, double attack, double defence, double speed, s
 	this->speed = speed;
 	this->speedStage = 0;
 	this->type = type;
+	this->moves.swap(moves);
 }
 
 Creature::~Creature() {
@@ -89,6 +90,22 @@ bool Creature::isType(CreatureTypeEnum::CreatureTypeEnum type) {
 	return isType;
 }
 
+Creature& Creature::replaceOrAddMove(const Move& newMove, int moveToReplace = -1) {
+	int numMoves = moves.size();
+	if (moveToReplace == -1) {
+		if (numMoves >= 4) {
+			throw newMove;
+		}
+		moves.push_back(newMove);
+	}
+	else {
+		//TODO: out of bounds protection
+		moves[moveToReplace] = newMove;
+	}
+	
+	return *this;
+}
+
 
 Creature& Creature::takeDamage(double damage) {
 	currentHealth = (currentHealth - damage) > 0 ? currentHealth - damage : 0;
@@ -120,6 +137,14 @@ double Creature::getSpeed() const {
 	return speed * stageMultiplier;
 }
 
+std::vector<Move> Creature::getMoves() {
+	return moves;
+}
+
+const Move& Creature::getMove(int moveIndex){
+	//TODO: out of bounds protection
+	return moves[moveIndex];
+}
 
 
 Creature& Creature::increaseStatStage(CreatureStatEnum stat, unsigned int numStages) {

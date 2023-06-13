@@ -11,8 +11,14 @@ Move::Move() {
 
 Move::Move(double power, double accuracy, MoveTypeEnum::MoveTypeEnum type) {
 	this->power = power;
-	this->accuracy = power;
+	this->accuracy = accuracy;
 	this->type = type;
+}
+
+Move::Move(const Move& other) {
+	power = other.power;
+	accuracy = other.accuracy;
+	type = other.type;
 }
 
 Move& Move::setPower(double power) {

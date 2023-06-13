@@ -16,17 +16,27 @@ int main()
 	cout << "CREATURE BATTLER TEST" << endl;
 	cout << "---------------------" << endl;
 
-	shared_ptr<Creature> creature1 = make_shared<Creature>(100, 10, 30, 50, new set<CreatureTypeEnum::CreatureTypeEnum>());
+	vector<Move> moveSet1(4);
+	moveSet1[0] = Move(20, 100,MoveTypeEnum::AIR);
+	moveSet1[1] = Move(30, 100, MoveTypeEnum::AIR);
+	moveSet1[2] = Move(15, 100, MoveTypeEnum::AIR);
+	moveSet1[3] = Move(50, 100, MoveTypeEnum::AIR);
+	shared_ptr<Creature> creature1 = make_shared<Creature>(200, 10, 30, 50, new set<CreatureTypeEnum::CreatureTypeEnum>(), moveSet1);
 	creature1->setName("ditto");
-	shared_ptr<Creature> creature2 = make_shared<Creature>(100, 30, 10, 20, new set<CreatureTypeEnum::CreatureTypeEnum>());
+	vector<Move> moveSet2(4);
+	moveSet2[0] = Move(60, 100, MoveTypeEnum::AIR);
+	moveSet2[1] = Move(25, 100, MoveTypeEnum::AIR);
+	moveSet2[2] = Move(40, 100, MoveTypeEnum::AIR);
+	moveSet2[3] = Move(35, 100, MoveTypeEnum::AIR);
+	shared_ptr<Creature> creature2 = make_shared<Creature>(150, 30, 10, 20, new set<CreatureTypeEnum::CreatureTypeEnum>(), moveSet2);
 	creature2->setName("bidoof");
 	shared_ptr<Battle> battle = make_shared<Battle>(creature1, creature2);
 
 	do {
 		cout << *creature1 << endl;
 		cout << *creature2 << endl;
-		shared_ptr<Move> creature1Move = make_unique<Move>(50,100,MoveTypeEnum::EARTH);
-		shared_ptr<Move> creature2Move = make_unique<Move>(50,100,MoveTypeEnum::WATER);
+		shared_ptr<Move> creature1Move = make_shared<Move>(creature1->getMove(RandomManager::rollDice(4)));
+		shared_ptr<Move> creature2Move = make_shared<Move>(creature2->getMove(RandomManager::rollDice(4)));
 		battle->doTurn(creature1Move, creature2Move);
 	} while (creature1->getCurrentHealth() > 0 && creature2->getCurrentHealth() > 0);
 

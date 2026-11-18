@@ -30,6 +30,20 @@ Creature::Creature(double health, double attack, double defence, double speed, s
 	this->moves.swap(moves);
 }
 
+Creature::Creature(const Creature& other){
+	this->name = other.name;
+	this->health = other.health;
+	this->currentHealth = other.currentHealth;
+	this->attack = other.attack;
+	this->attackStage = other.attackStage;
+	this->defence = other.defence;
+	this->defenceStage = other.defenceStage;
+	this->speed = other.speed;
+	this->speedStage = other.speedStage;
+	this->type = new std::set<CreatureTypeEnum::CreatureTypeEnum>(*(other.type));
+	this->moves = other.moves;
+}
+
 Creature::~Creature() {
 	if (type != NULL)
 		delete type;
@@ -135,6 +149,10 @@ double Creature::getHealth() const {
 double Creature::getSpeed() const {
 	double stageMultiplier = speedStage >= 0 ? ((2 + speedStage) / 2) : (2 / (2 + speedStage));
 	return speed * stageMultiplier;
+}
+
+std::string Creature::getName() const {
+	return name;
 }
 
 std::vector<Move> Creature::getMoves() {

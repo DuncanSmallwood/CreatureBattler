@@ -4,8 +4,8 @@
 #include <set>
 #include <vector>
 
-#include "Enum/CreatureStatEnum.cpp"
-#include "Enum/CreatureTypeEnum.cpp"
+#include "Enum/CreatureStatEnum.h"
+#include "Enum/CreatureTypeEnum.h"
 #include "Move.h"
 
 class Creature {
@@ -28,6 +28,7 @@ private:
 public:
 	Creature();
 	Creature(double health, double attack, double defence, double speed, std::set<CreatureTypeEnum::CreatureTypeEnum>* type, std::vector<Move> moves);
+	Creature(const Creature& other);
 	~Creature();
 
 	Creature& setAttack(double attack);
@@ -49,6 +50,7 @@ public:
 	virtual double getDefence() const;
 	virtual double getHealth() const;
 	virtual double getSpeed() const;
+	std::string getName() const;
 	std::vector<Move> getMoves();
 	const Move& getMove(int moveIndex);
 

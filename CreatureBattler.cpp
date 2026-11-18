@@ -1,58 +1,49 @@
-﻿// CreatureBattler.cpp : Defines the entry point for the application.
+// CreatureBattler.cpp : Defines the entry point for the application.
 //
 
 #include "CreatureBattler.h"
 
 using namespace std;
 
-struct test {
-	public:
-		std::shared_ptr<int> internalInt;
-
-};
-
 int main()
 {
 	cout << "CREATURE BATTLER TEST" << endl;
 	cout << "---------------------" << endl;
 
-	vector<Move> moveSet1(4);
-	moveSet1[0] = Move(20, 100,MoveTypeEnum::AIR);
-	moveSet1[1] = Move(30, 100, MoveTypeEnum::AIR);
-	moveSet1[2] = Move(15, 100, MoveTypeEnum::AIR);
-	moveSet1[3] = Move(50, 100, MoveTypeEnum::AIR);
-	shared_ptr<Creature> creature1 = make_shared<Creature>(200, 10, 30, 50, new set<CreatureTypeEnum::CreatureTypeEnum>(), moveSet1);
-	creature1->setName("ditto");
-	vector<Move> moveSet2(4);
-	moveSet2[0] = Move(60, 100, MoveTypeEnum::AIR);
-	moveSet2[1] = Move(25, 100, MoveTypeEnum::AIR);
-	moveSet2[2] = Move(40, 100, MoveTypeEnum::AIR);
-	moveSet2[3] = Move(35, 100, MoveTypeEnum::AIR);
-	shared_ptr<Creature> creature2 = make_shared<Creature>(150, 30, 10, 20, new set<CreatureTypeEnum::CreatureTypeEnum>(), moveSet2);
-	creature2->setName("bidoof");
-	shared_ptr<Battle> battle = make_shared<Battle>(creature1, creature2);
+	BattleBuilder battleBuilder;
+	std::cout << "(debug) battleBuilder created" << std::endl;
+	CreateCreatureRequest creature1Request(0L, {0L, 0L, 0L, 0L}, "ditto");
+	CreateCreatureRequest creature2Request(1L, {0L, 0L, 0L, 0L}, "bidoof");
+	Battle* battle = battleBuilder.buildBattle(creature1Request, creature2Request);
+	
+	std::cout << "(debug) battle created and ready to commence" << std::endl;
 
+	std::pair<Creature, Creature> participants;
 	do {
-		cout << *creature1 << endl;
-		cout << *creature2 << endl;
-		shared_ptr<Move> creature1Move = make_shared<Move>(creature1->getMove(RandomManager::rollDice(4)));
-		shared_ptr<Move> creature2Move = make_shared<Move>(creature2->getMove(RandomManager::rollDice(4)));
-		battle->doTurn(creature1Move, creature2Move);
-	} while (creature1->getCurrentHealth() > 0 && creature2->getCurrentHealth() > 0);
+		participants = battle->viewCreatures();
+		cout << participants.first << endl;
+		cout << participants.second << endl;
+		std::unique_ptr<Move> creature1Move(new Move(participants.first.getMove(RandomManager::rollDice(4))));
+		std::unique_ptr<Move> creature2Move(new Move(participants.second.getMove(RandomManager::rollDice(4))));
+		battle->doTurn(creature1Move.get(), creature2Move.get());
+	} while (participants.first.getCurrentHealth() > 0 && participants.second.getCurrentHealth() > 0);
 
 	Creature* winner = NULL;
 	Creature* loser = NULL;
-	if (creature1->getCurrentHealth() > 0 && creature2->getCurrentHealth() <= 0) {
-		winner = creature1.get();
-		loser = creature2.get();
+	if (participants.first.getCurrentHealth() > 0 && participants.second.getCurrentHealth() <= 0) {
+		winner = &participants.first;
+		loser = &participants.second;
 	}
-	else if (creature2->getCurrentHealth() > 0 && creature1->getCurrentHealth() <= 0) {
-		winner = creature2.get();
-		loser = creature1.get();
+	else if (participants.second.getCurrentHealth() > 0 && participants.first.getCurrentHealth() <= 0) {
+		winner = &participants.second;
+		loser = &participants.first;
 	}
 
 	cout << "WINNER!!!!" << *winner << endl;
 	cout << "loser...." << *loser << endl;
+	
+	if(battle)
+		delete battle;
 
 	return 0;
 }

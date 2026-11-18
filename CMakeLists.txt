@@ -10,11 +10,30 @@ if (POLICY CMP0141)
 endif()
 
 project ("CreatureBattler")
+add_subdirectory(CreatureModel)
+add_subdirectory(Battle)
+add_subdirectory("Request-Response")
 
 # Add source to this project's executable.
-add_executable (CreatureBattler "CreatureBattler.cpp" "CreatureBattler.h" "CreatureModel/Creature.cpp" "CreatureModel/Enum/CreatureTypeEnum.cpp" "CreatureModel/Move.h" "CreatureModel/Enum/MoveTypeEnum.cpp" "CreatureModel/Move.cpp" "Battle/Turn.h" "Battle/Turn.cpp" "include/rng/RandomManager.cpp" "Battle/CombatMoment.h" "Battle/CombatMoment.cpp" "Battle/Battle.h" "Battle/Battle.cpp")
+add_executable (CreatureBattler)
+target_sources(CreatureBattler
+	PRIVATE
+	"CreatureBattler.cpp"
+	"CreatureBattler.h"
+	"include/rng/RandomManager.cpp")
 
-# target_link_libraries(struct_mapping PUBLIC)
+#add_library(struct_mapping)
+#target_sources(struct_mapping
+#	PUBLIC
+#	"include/struct_mapping/*.h"
+#	"include/struct_mapping/options/*.h")
+
+target_link_libraries(CreatureBattler
+	PRIVATE
+	#struct_mapping
+	CreatureModel
+	RequestResponseObjects
+	Battle)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET CreatureBattler PROPERTY CXX_STANDARD 20)

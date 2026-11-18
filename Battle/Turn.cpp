@@ -1,12 +1,9 @@
-#ifndef TURN_CPP
-#define TURN_CPP
-
 #include <list>
 
 #include "Turn.h"
-#include "..\include\rng\RandomManager.h"
+#include "../include/rng/RandomManager.h"
 // TODO: make it so the moment order is dynamic with speed boosts ect.
-Turn::Turn(std::shared_ptr<Creature> creature1, std::shared_ptr<Creature> creature2, std::shared_ptr<Move> creature1Move, std::shared_ptr<Move> creature2Move) {
+Turn::Turn(Creature* creature1, Creature* creature2, Move* creature1Move, Move* creature2Move) {
 	this->creature1 = creature1;
 	this->creature2 = creature2;
 	this->creature1Move = creature1Move;
@@ -21,8 +18,8 @@ Turn::Turn(std::shared_ptr<Creature> creature1, std::shared_ptr<Creature> creatu
 	else
 		creature1First = c1Speed > c2Speed;
 
-	std::shared_ptr<CombatMoment> moment1 = std::make_shared<CombatMoment>(creature1Move, creature1, creature2);
-	std::shared_ptr<CombatMoment> moment2 = std::make_shared<CombatMoment>(creature2Move, creature2, creature1);
+	std::shared_ptr<CombatMoment> moment1(new CombatMoment(creature1Move, creature1, creature2));
+	std::shared_ptr<CombatMoment> moment2(new CombatMoment(creature2Move, creature2, creature1));
 	if (creature1First) {
 		momentQueue.push_back(moment1);
 		momentQueue.push_back(moment2);
@@ -35,25 +32,26 @@ Turn::Turn(std::shared_ptr<Creature> creature1, std::shared_ptr<Creature> creatu
 }
 
 
-Turn& Turn::setCreature1(std::shared_ptr<Creature> creature) {
+Turn& Turn::setCreature1(Creature* creature) {
 	creature1 = creature;
 	return *this;
 }
 
-Turn& Turn::setCreature2(std::shared_ptr<Creature> creature) {
+Turn& Turn::setCreature2(Creature* creature) {
 	creature2 = creature;
 	return *this;
 }
 
-std::shared_ptr<Creature> Turn::getCreature1() const{
+Creature* Turn::getCreature1() const{
 	return creature1;
 }
 
-std::shared_ptr<Creature> Turn::getCreature2() const {
+Creature* Turn::getCreature2() const {
 	return creature2;
 }
 
 
+// TODO:This may be evidence that these CombatMoments need to be shared_ptr objects
 std::shared_ptr<CombatMoment> Turn::nextMoment() {
 	std::shared_ptr<CombatMoment> nextMoment = momentQueue.front();
 	momentQueue.erase(momentQueue.begin());
@@ -74,4 +72,3 @@ void Turn::clearMoments(const Creature& source) {
 		}
 	}
 }
-#endif // TURN_CPP

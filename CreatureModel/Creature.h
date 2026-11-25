@@ -16,7 +16,7 @@ private:
 	double health;
 	double speed;
 
-	std::set<CreatureTypeEnum::CreatureTypeEnum>* type;
+	std::set<CreatureTypeEnum::CreatureTypeEnum> type;
 
 	std::vector<Move> moves;
 
@@ -27,9 +27,7 @@ private:
 
 public:
 	Creature();
-	Creature(double health, double attack, double defence, double speed, std::set<CreatureTypeEnum::CreatureTypeEnum>* type, std::vector<Move> moves);
-	Creature(const Creature& other);
-	~Creature();
+	Creature(double health, double attack, double defence, double speed, std::set<CreatureTypeEnum::CreatureTypeEnum> type, std::vector<Move> moves);
 
 	Creature& setAttack(double attack);
 	Creature& setDefence(double defence);
@@ -37,7 +35,7 @@ public:
 	Creature& setSpeed(double speed);
 	Creature& setName(std::string name);
 
-	Creature& setType(std::set<CreatureTypeEnum::CreatureTypeEnum>* type);
+	Creature& setType(std::set<CreatureTypeEnum::CreatureTypeEnum> type);
 	Creature& ensureType(CreatureTypeEnum::CreatureTypeEnum type);
 	bool isType(CreatureTypeEnum::CreatureTypeEnum type);
 
@@ -58,6 +56,7 @@ public:
 	virtual Creature& decreaseStatStage(CreatureStatEnum stat, unsigned int numStages);
 
 	bool operator==(const Creature& other) const;
+	Creature& operator=(const Creature& other);
 
 	// TODO: is this even nessesary
 	//friend std::istream& operator>>(std::istream& i, Creature& creature);

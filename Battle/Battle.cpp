@@ -9,15 +9,17 @@ Battle::Battle(const Creature& creature1, const Creature& creature2){
 	this->creature2.reset(new Creature(creature2));
 }
 
-
-Battle::Battle(Creature* creature1, Creature* creature2)
-	:creature1(creature1), creature2(creature2){}
+Battle::Battle(Creature* creature1, Creature* creature2){
+		this->creature1.reset(creature1);
+		this->creature2.reset(creature2);
+}
 
 void Battle::doTurn(Move* creature1Move, Move* creature2Move) {
-	std::unique_ptr<Turn> turn = std::make_unique<Turn>(creature1.get(), creature2.get(), creature1Move, creature2Move);
-	while (turn->moreMoments())
+	Turn turn(creature1.get(), creature2.get(), creature1Move, creature2Move);
+
+	while (turn.moreMoments())
 	{
-		std::shared_ptr<CombatMoment> cm = turn->nextMoment();
+		std::shared_ptr<CombatMoment> cm = turn.nextMoment();
 		Creature* target = cm->getTargetCreature();
 		double targetDef = target->getDefence();
 		Creature* source = cm->getSourceCreature();
@@ -28,7 +30,7 @@ void Battle::doTurn(Move* creature1Move, Move* creature2Move) {
 		target->takeDamage(damage);
 		double health = target->getCurrentHealth();
 		if (health <= 0) {
-			turn->clearMoments(*target);
+			turn.clearMoments(*target);
 		}
 	}
 }

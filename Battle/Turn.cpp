@@ -18,8 +18,8 @@ Turn::Turn(Creature* creature1, Creature* creature2, Move* creature1Move, Move* 
 	else
 		creature1First = c1Speed > c2Speed;
 
-	std::shared_ptr<CombatMoment> moment1(new CombatMoment(creature1Move, creature1, creature2));
-	std::shared_ptr<CombatMoment> moment2(new CombatMoment(creature2Move, creature2, creature1));
+	CombatMoment* moment1 = new CombatMoment(creature1Move, creature1, creature2);
+	CombatMoment* moment2 = new CombatMoment(creature2Move, creature2, creature1);
 	if (creature1First) {
 		momentQueue.push_back(moment1);
 		momentQueue.push_back(moment2);
@@ -31,6 +31,13 @@ Turn::Turn(Creature* creature1, Creature* creature2, Move* creature1Move, Move* 
 	
 }
 
+Turn::~Turn(){
+	for(std::list<CombatMoment*>::iterator it = momentQueue.begin(); it != momentQueue.end(); it++){
+		if (*it)
+			delete *it;
+		momentQueue.erase(it);
+	}
+}
 
 Turn& Turn::setCreature1(Creature* creature) {
 	creature1 = creature;
@@ -52,8 +59,8 @@ Creature* Turn::getCreature2() const {
 
 
 // TODO:This may be evidence that these CombatMoments need to be shared_ptr objects
-std::shared_ptr<CombatMoment> Turn::nextMoment() {
-	std::shared_ptr<CombatMoment> nextMoment = momentQueue.front();
+std::unique_ptr<CombatMoment> Turn::nextMoment() {
+	std::unique_ptr<CombatMoment> nextMoment(momentQueue.front());
 	momentQueue.erase(momentQueue.begin());
 	return nextMoment;
 }
@@ -63,8 +70,9 @@ bool Turn::moreMoments() {
 }
 
 void Turn::clearMoments(const Creature& source) {
-	for (std::list<std::shared_ptr<CombatMoment>>::iterator it = momentQueue.begin(); it != momentQueue.end();) {
-		if (*it->get()->getSourceCreature() == source) {
+	for (std::list<CombatMoment*>::iterator it = momentQueue.begin(); it != momentQueue.end();) {
+		if (*(**it).getSourceCreature() == source) {
+			delete *it;
 			it = momentQueue.erase(it);
 		}
 		else {

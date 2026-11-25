@@ -15,17 +15,18 @@ private:
 	Move* creature1Move;
 	Move* creature2Move;
 
-	std::list<std::shared_ptr<CombatMoment>> momentQueue;
+	std::list<CombatMoment*> momentQueue;
 
 public:
 	Turn(Creature* creature1, Creature* creature2, Move* creature1Move, Move* creature2Move);
+	~Turn();
 
 	Turn& setCreature1(Creature* creature1);
 	Turn& setCreature2(Creature* creature2);
 	Creature* getCreature1() const;
 	Creature* getCreature2() const;
 
-	std::shared_ptr<CombatMoment> nextMoment();
+	std::unique_ptr<CombatMoment> nextMoment();
 	bool moreMoments();
 	void clearMoments(const Creature& source);
 };

@@ -10,22 +10,21 @@ int main()
 	cout << "CREATURE BATTLER TEST" << endl;
 	cout << "---------------------" << endl;
 
-	BattleBuilder battleBuilder;
-	std::cout << "(debug) battleBuilder created" << std::endl;
+	BattleBuilder* battleBuilder = new BattleBuilder;
 	CreateCreatureRequest creature1Request(0L, {0L, 0L, 0L, 0L}, "ditto");
 	CreateCreatureRequest creature2Request(1L, {0L, 0L, 0L, 0L}, "bidoof");
-	Battle* battle = battleBuilder.buildBattle(creature1Request, creature2Request);
-	
-	std::cout << "(debug) battle created and ready to commence" << std::endl;
+	Battle* battle = battleBuilder->buildBattle(creature1Request, creature2Request);
 
 	std::pair<Creature, Creature> participants;
 	do {
 		participants = battle->viewCreatures();
 		cout << participants.first << endl;
 		cout << participants.second << endl;
-		std::unique_ptr<Move> creature1Move(new Move(participants.first.getMove(RandomManager::rollDice(4))));
-		std::unique_ptr<Move> creature2Move(new Move(participants.second.getMove(RandomManager::rollDice(4))));
-		battle->doTurn(creature1Move.get(), creature2Move.get());
+		Move* creature1Move = new Move(participants.first.getMove(RandomManager::rollDice(4)));
+		Move* creature2Move = new Move(participants.second.getMove(RandomManager::rollDice(4)));
+		battle->doTurn(creature1Move, creature2Move);
+		delete creature1Move;
+		delete creature2Move;
 	} while (participants.first.getCurrentHealth() > 0 && participants.second.getCurrentHealth() > 0);
 
 	Creature* winner = NULL;
@@ -42,8 +41,15 @@ int main()
 	cout << "WINNER!!!!" << *winner << endl;
 	cout << "loser...." << *loser << endl;
 	
-	if(battle)
+	if(battle){
 		delete battle;
+		battle = nullptr;
+	}
+
+	if(battleBuilder){
+		delete battleBuilder;
+		battleBuilder = nullptr;
+	}
 
 	return 0;
 }

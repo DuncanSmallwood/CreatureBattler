@@ -4,8 +4,8 @@
 #include <memory>
 
 #include "../CreatureModel/Creature.h"
-#include "CombatMoment.h"
-#include "Turn.h"
+#include <CombatMoment.h>
+#include <Turn.h>
 
 class Battle {
 private:

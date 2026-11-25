@@ -5,19 +5,17 @@
 
 bool Creature::registeredWithStructMapping = false;
 
-Creature::Creature() {
-	health = -1;
-	currentHealth = 0;
-	attack = -1;
-	attackStage = 0;
-	defence = -1;
-	defenceStage = 0;
-	speed = -1;
-	speedStage = 0;
-	type = NULL;
-}
+Creature::Creature()
+	: health(-1),
+	currentHealth(0),
+	attack(-1),
+	attackStage(0),
+	defence(-1),
+	defenceStage(0),
+	speed(-1),
+	speedStage(0){}
 
-Creature::Creature(double health, double attack, double defence, double speed, std::set<CreatureTypeEnum::CreatureTypeEnum>* type, std::vector<Move> moves) {
+Creature::Creature(double health, double attack, double defence, double speed, std::set<CreatureTypeEnum::CreatureTypeEnum> type, std::vector<Move> moves) {
 	this->health = health;
 	this->currentHealth = health;
 	this->attack = attack;
@@ -28,26 +26,6 @@ Creature::Creature(double health, double attack, double defence, double speed, s
 	this->speedStage = 0;
 	this->type = type;
 	this->moves.swap(moves);
-}
-
-Creature::Creature(const Creature& other){
-	this->name = other.name;
-	this->health = other.health;
-	this->currentHealth = other.currentHealth;
-	this->attack = other.attack;
-	this->attackStage = other.attackStage;
-	this->defence = other.defence;
-	this->defenceStage = other.defenceStage;
-	this->speed = other.speed;
-	this->speedStage = other.speedStage;
-	this->type = new std::set<CreatureTypeEnum::CreatureTypeEnum>(*(other.type));
-	this->moves = other.moves;
-}
-
-Creature::~Creature() {
-	if (type != NULL)
-		delete type;
-	type = NULL;
 }
 
 // TODO: set protections against setting a second time
@@ -77,30 +55,20 @@ Creature& Creature::setName(std::string name) {
 }
 
 
-Creature& Creature::setType(std::set<CreatureTypeEnum::CreatureTypeEnum>* type) {
-	if (this->type != NULL) {
-		delete this->type;
-	}
+Creature& Creature::setType(std::set<CreatureTypeEnum::CreatureTypeEnum> type) {
 	this->type = type;
 	return *this;
 }
 
 Creature& Creature::ensureType(CreatureTypeEnum::CreatureTypeEnum type) {
-	if (this->type == NULL) {
-		this->type = new std::set<CreatureTypeEnum::CreatureTypeEnum>();
-	}
-	
 	if(!isType(type)){
-	this->type->insert(type);
+		this->type.insert(type);
 	}
 	return *this;
 }
 
 bool Creature::isType(CreatureTypeEnum::CreatureTypeEnum type) {
-	bool isType = false;
-	if (this->type != NULL) {
-		isType = this->type->find(type) != this->type->end();
-	}
+	bool isType = isType = this->type.find(type) != this->type.end();
 	return isType;
 }
 
@@ -214,17 +182,34 @@ bool Creature::operator==(const Creature& other) const{
 		return false;
 	}
 	std::set<CreatureTypeEnum::CreatureTypeEnum>::iterator i;
-	for (i = type->begin(); i != type->end(); ++i) {
-		if (other.type->find(*i) == other.type->end())
+	for (i = type.begin(); i != type.end(); ++i) {
+		if (other.type.find(*i) == other.type.end())
 			return false;
 	}
-	for (i = other.type->begin(); i != other.type->end(); ++i) {
-		if (type->find(*i) == type->end())
+	for (i = other.type.begin(); i != other.type.end(); ++i) {
+		if (type.find(*i) == type.end())
 			return false;
 	}
-
 
 	return true;
+}
+
+Creature& Creature::operator=(const Creature& other){
+	if (this != &other){
+		this->name = other.name;
+		this->health = other.health;
+		this->currentHealth = other.currentHealth;
+		this->attack = other.attack;
+		this->attackStage = other.attackStage;
+		this->defence = other.defence;
+		this->defenceStage = other.defenceStage;
+		this->speed = other.speed;
+		this->speedStage = other.speedStage;
+		this->type = other.type;
+		this->moves = other.moves;
+	}
+
+	return *this;
 }
 
 // TODO: decide how to JSON this thing
